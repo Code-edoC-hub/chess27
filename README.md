@@ -1,1 +1,2 @@
-# chess27
+# chess_prototype
+ KIF
