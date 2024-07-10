@@ -1,7 +1,7 @@
 ﻿#include "ChessClass.h"
 #define key
 int main(int argc, char** argv) {
-	// setlocale (LC_ALL,"RUS");
+	//setlocale (LC_ALL,"RUS");
 
 	massivcall();
 	FigureStart();
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 	GameEnd();
 
 
-
+	
 	return 0;
 }
 
@@ -33,3 +33,6 @@ int main(int argc, char** argv) {
 	cout << endl << "" << endl;
 #endif // DEBUG
 */
+//StepWhite(
+//	StepBlack(
+

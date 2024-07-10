@@ -31,7 +31,6 @@ public:
 	int life;
 	int coordinateRow;
 	int coordinateColumn;
-	string color;
 	string Color;
 	// int MoveCoordinates[2];
 
@@ -928,6 +927,7 @@ void SchreibenPosition(int BeschribendePosition[]) {
 
 
 void StepWhite() {
+	TryAgainStepWhite:
 					#ifdef DEBUG
 						cout << "Step White funk" << endl;
 					#endif // DEBUG
@@ -954,27 +954,35 @@ void StepWhite() {
 
 		WhiteKonig[0].move();
 	}
-	if (SelectorClassFigure == "WhiteDame") {
+	else if (SelectorClassFigure == "WhiteDame") {
 		WhiteDame[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "WhiteTurm") {
+	else if (SelectorClassFigure == "WhiteTurm") {
 		WhiteTurm[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "WhitePferd") {
+	else if (SelectorClassFigure == "WhitePferd") {
 		WhitePferd[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "WhiteLaufer") {
+	else if (SelectorClassFigure == "WhiteLaufer") {
 		WhiteLaufer[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "WhiteBauer") {
+	else if (SelectorClassFigure == "WhiteBauer") {
 		WhiteBauer[SelectorNumber].move();
+	}
+	else {
+		cout << "It is not your figure" << endl;
+		goto TryAgainStepWhite;
 	}
 	BeschribendePosition[0] = 100;
 	BeschribendePosition[1] = 100;
 }
 
 void StepBlack() {
-	cout << "Step Black funk" << endl;
+TryAgainStepBlack:
+		#ifdef DEBUG
+			cout << "Step Black funk" << endl;
+		#endif // DEBUG
+	
 	int BeschribendePosition[2];
 	SchreibenPosition(BeschribendePosition);
 
@@ -995,22 +1003,25 @@ void StepBlack() {
 	if (SelectorClassFigure == "BlackKonig") {
 		BlackKonig[0].move();
 	}
-	if (SelectorClassFigure == "BlackDame") {
+	else if (SelectorClassFigure == "BlackDame") {
 		BlackDame[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "BlackTurm") {
+	else if (SelectorClassFigure == "BlackTurm") {
 		BlackTurm[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "BlackPferd") {
+	else if (SelectorClassFigure == "BlackPferd") {
 		BlackPferd[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "BlackLaufer") {
+	else if (SelectorClassFigure == "BlackLaufer") {
 		BlackLaufer[SelectorNumber].move();
 	}
-	if (SelectorClassFigure == "BlackBauer") {
+	else if (SelectorClassFigure == "BlackBauer") {
 		BlackBauer[SelectorNumber].move();
 	}
-
+	else {
+		cout << "It is not your figure" << endl;
+		goto TryAgainStepBlack;
+	}
 	BeschribendePosition[0] = 100;
 	BeschribendePosition[1] = 100;
 }
@@ -1050,8 +1061,9 @@ void GameEnd() {
 }
 
 
-void SchreibenPositionFurMove(int MoveCoordinates[]) {
+void SchreibenPositionFurMove(int MoveCoordinates[],int PositionCheck[]) {
 
+	TryAgainSchreibenPosition:
 	char WhiteCoordinates[5] = { '!','!','!','!','!' };
 	int korrektheitzahl = 0;
 	int korrektheitBuchstabe = 0;
@@ -1069,6 +1081,7 @@ void SchreibenPositionFurMove(int MoveCoordinates[]) {
 			korrektheitBuchstabe = 0;
 			cout << "\nWrite coordinates to change position=";
 			cin >> WhiteCoordinates;
+
 			if (WhiteCoordinates[2] != '\0') cout << "Too many !!" << endl;
 			//	 cout<<WhiteCoordinates[0]<<WhiteCoordinates[1]<<WhiteCoordinates[2]<<WhiteCoordinates[3]<<endl;	
 		} while (WhiteCoordinates[2] != '\0');
@@ -1092,6 +1105,17 @@ void SchreibenPositionFurMove(int MoveCoordinates[]) {
 		if ((WhiteCoordinates[0] == 'h') || (WhiteCoordinates[1] == 'h') || (WhiteCoordinates[0] == 'H') || (WhiteCoordinates[1] == 'H')) { DeskCoordinates[1] = 7; korrektheitBuchstabe++; }
 		// 	cout<<"\nbefore end korrektheitzahl="<<korrektheitzahl<<" korrektheitBuchstabe=" <<korrektheitBuchstabe<<endl;
 	} while ((korrektheitzahl != 1) || (korrektheitBuchstabe != 1));
+
+#ifdef DEBUG
+	cout << endl << "PositionCheck[0]=" << PositionCheck[0] << "	PositionCheck[1]" << PositionCheck[1] << endl;
+	cout << " DeskCoordinates[0]" << DeskCoordinates[0] << "	DeskCoordinates[1]" << DeskCoordinates[1] << endl;
+#endif // DEBUG
+	if ((PositionCheck[0] == DeskCoordinates[0] && PositionCheck[1] == DeskCoordinates[1]) || (PositionCheck[0] == DeskCoordinates[1] && PositionCheck[1] == DeskCoordinates[0])) {
+		cout << "You choose same place" << endl;
+		goto TryAgainSchreibenPosition;
+	}
+
+
 	MoveCoordinates[0] = DeskCoordinates[0];
 	MoveCoordinates[1] = DeskCoordinates[1];
 	DeskCoordinates[0] = 100;
@@ -1107,11 +1131,12 @@ void SchreibenPositionFurMove(int MoveCoordinates[]) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 */
 void WhiteKonig::MoveWhiteKonig() {
-	int Wiederholer = 0;
+	int Wiederholer = 1;
 AnfangdesWhiteKonig:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n"; 	Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1] + 1))) { goto CheckCellWhiteKonig; }
 		else	if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1]))) { goto CheckCellWhiteKonig; }
@@ -1167,11 +1192,12 @@ AnfangdesWhiteKonig:
 
 void BlackKonig::MoveBlackKonig() {
 
-	int Wiederholer = 0;
+	int Wiederholer = 1;
 AnfangdesBlackKonig:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";	 	Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1] + 1))) { goto CheckCellBlackKonig; }
 		else	if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1]))) { goto CheckCellBlackKonig; }
@@ -1223,11 +1249,12 @@ AnfangdesBlackKonig:
 
 
 void WhiteLaufer::MoveWhiteLaufer() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesWhiteLaufer:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn()};
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellWhiteLaufer; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0] + 2)) && (coordinateColumn == (MoveCoordinates[1] - 2))) { goto CheckCellWhiteLaufer; } //2
@@ -1302,11 +1329,12 @@ AnfangdesWhiteLaufer:
 }
 
 void BlackLaufer::MoveBlackLaufer() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesBlackLaufer:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellBlackLaufer; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0] + 2)) && (coordinateColumn == (MoveCoordinates[1] - 2))) { goto CheckCellBlackLaufer; } //2
@@ -1381,12 +1409,14 @@ AnfangdesBlackLaufer:
 }
 
 void WhitePferd::MoveWhitePferd() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesWhitePferd:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
+
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";
 		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 2)) && (coordinateColumn == (MoveCoordinates[1] + 1))) { goto CheckCellWhitePferd; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0] + 2)) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellWhitePferd; } //2
@@ -1440,12 +1470,13 @@ AnfangdesWhitePferd:
 }
 
 void BlackPferd::MoveBlackPferd() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesBlackPferd:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";
 		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 2)) && (coordinateColumn == (MoveCoordinates[1] + 1))) { goto CheckCellBlackPferd; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0] + 2)) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellBlackPferd; } //2
@@ -1500,12 +1531,13 @@ AnfangdesBlackPferd:
 
 void WhiteTurm::MoveWhiteTurm() {
 
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesWhiteTurm:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";
 		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellWhiteTurm; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 2))) { goto CheckCellWhiteTurm; } //2
@@ -1582,12 +1614,13 @@ AnfangdesWhiteTurm:
 }
 
 void BlackTurm::MoveBlackTurm() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesBlackTurm:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";
 		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellBlackTurm; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 2))) { goto CheckCellBlackTurm; } //2
@@ -1664,12 +1697,13 @@ AnfangdesBlackTurm:
 }
 
 void WhiteDame::MoveWhiteDame() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesWhiteDame:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";
 		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellWhiteDame; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 2))) { goto CheckCellWhiteDame; } //2
@@ -1779,12 +1813,13 @@ AnfangdesWhiteDame:
 }
 
 void BlackDame::MoveBlackDame() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesBlackDame:
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n";
 		Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 1))) { goto CheckCellBlackDame; } //1
 		else	if ((coordinateRow == (MoveCoordinates[0])) && (coordinateColumn == (MoveCoordinates[1] - 2))) { goto CheckCellBlackDame; } //2
@@ -1894,12 +1929,13 @@ AnfangdesBlackDame:
 }
 
 void WhiteBauer::MoveWhiteBauer() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesWhiteBauer:
 
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n"; 	Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] - 1)) && (coordinateColumn == (MoveCoordinates[1]))) { SuperSchritt = 100; goto CheckCellWhiteBauerStep; }
 
@@ -1972,12 +2008,13 @@ AnfangdesWhiteBauer:
 }
 
 void BlackBauer::MoveBlackBauer() {
-	int Wiederholer=0;
+	int Wiederholer=1;
 AnfangdesBlackBauer:
 
 	do {
+		int PositionCheck[2] = { this->GetCoordinateRow(),this->GetCoordinateColumn() };
 		if (Wiederholer == 0) cout << "You Write incorrect coordinates \n"; 	Wiederholer = 20;
-		SchreibenPositionFurMove(MoveCoordinates);
+		SchreibenPositionFurMove(MoveCoordinates,PositionCheck);
 
 		if ((coordinateRow == (MoveCoordinates[0] + 1)) && (coordinateColumn == (MoveCoordinates[1]))) { SuperSchritt = 100; goto CheckCellBlackBauerStep; }
 
