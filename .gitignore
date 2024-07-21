@@ -1,10 +1,4 @@
 ﻿################################################################################
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
-
-/.vs/chess27/v17
-/.vs/chess repair/v17/ipch/AutoPCH/14ebaa4ca46c1713
-/.vs/chess repair/v17/Browse.VC.db
-*.db-shm
-*.opendb
-*.db-wal
+/.vs/chess repair/v17/Browse.VC.opendb
